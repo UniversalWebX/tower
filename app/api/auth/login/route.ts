@@ -45,6 +45,6 @@ export async function POST(req: Request) {
       topics: interests.map((i) => i.topic),
     },
   });
-  attachSessionCookie(res, session.token, session.expiresAt);
+  attachSessionCookie(res, session.token);
   return res;
 }

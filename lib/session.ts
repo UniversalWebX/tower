@@ -4,12 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { SESSION_COOKIE, SESSION_MS } from "@/lib/constants";
 import crypto from "crypto";
 
-const cookieBase = {
-  httpOnly: true as const,
-  sameSite: "lax" as const,
-  path: "/",
-};
-
 export async function createSession(userId: string) {
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + SESSION_MS);
@@ -40,19 +34,39 @@ export async function getSessionUser() {
   return session.user;
 }
 
-/** Route handlers must set cookies on the returned `NextResponse` or Set-Cookie is dropped. */
-export function attachSessionCookie(res: NextResponse, token: string, expiresAt: Date) {
-  res.cookies.set(SESSION_COOKIE, token, {
-    ...cookieBase,
-    secure: process.env.NODE_ENV === "production",
-    expires: expiresAt,
-  });
+/** Raw Set-Cookie value — some Next runtimes drop `cookies().set` / `res.cookies.set`; headers are reliable. */
+export function buildSessionSetCookieHeader(token: string): string {
+  const maxAge = Math.floor(SESSION_MS / 1000);
+  const secure = process.env.NODE_ENV === "production";
+  const parts = [
+    `${SESSION_COOKIE}=${encodeURIComponent(token)}`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax",
+    `Max-Age=${maxAge}`,
+  ];
+  if (secure) parts.push("Secure");
+  return parts.join("; ");
+}
+
+export function buildSessionClearCookieHeader(): string {
+  const secure = process.env.NODE_ENV === "production";
+  const parts = [
+    `${SESSION_COOKIE}=`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax",
+    "Max-Age=0",
+    "Expires=Thu, 01 Jan 1970 00:00:00 GMT",
+  ];
+  if (secure) parts.push("Secure");
+  return parts.join("; ");
+}
+
+export function attachSessionCookie(res: NextResponse, token: string) {
+  res.headers.append("Set-Cookie", buildSessionSetCookieHeader(token));
 }
 
 export function clearSessionCookieOnResponse(res: NextResponse) {
-  res.cookies.set(SESSION_COOKIE, "", {
-    ...cookieBase,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 0,
-  });
+  res.headers.append("Set-Cookie", buildSessionClearCookieHeader());
 }
