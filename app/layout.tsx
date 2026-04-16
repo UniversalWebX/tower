@@ -1,22 +1,15 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { TowerBackdrop } from "@/components/TowerBackdrop";
-import { TowerProviders } from "@/components/TowerProviders";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Tower — topic & age aware video",
   description: "Tower ranks video posts using tags, your interests, and age fit, with optimized batched feeds and chat.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#05060a",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -25,12 +18,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-[#05060a] text-zinc-100">
-        <TowerProviders>
-          <TowerBackdrop />
-          {children}
-        </TowerProviders>
+        <div className="tower-backdrop" aria-hidden>
+          <div className="tower-backdrop-vignette" />
+        </div>
+        {children}
       </body>
     </html>
   );
