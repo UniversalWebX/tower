@@ -14,6 +14,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createUser(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.user.create({ data });
   }
 
@@ -21,6 +22,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findUser(where);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.user.findFirst({ where });
   }
 
@@ -28,6 +30,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.updateUser(id, data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.user.update({ where: { id }, data });
   }
 
@@ -42,6 +45,7 @@ export class DatabaseAdapter {
       }
       return true;
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.user.delete({ where: { id } });
   }
 
@@ -50,6 +54,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createSession(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.session.create({ data });
   }
 
@@ -57,6 +62,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findSession(where);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.session.findFirst({ where });
   }
 
@@ -64,6 +70,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.deleteSession(where);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     if (where.token) {
       return prisma.session.deleteMany({ where: { token: where.token } });
     }
@@ -77,6 +84,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createPost(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.post.create({ data });
   }
 
@@ -84,6 +92,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findPost(id);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.post.findUnique({ where: { id } });
   }
 
@@ -91,6 +100,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findPosts(where, take, orderBy);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.post.findMany({ 
       where, 
       take, 
@@ -102,6 +112,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.deletePost(id);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.post.delete({ where: { id } });
   }
 
@@ -110,6 +121,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createPostTag(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.postTag.create({ data });
   }
 
@@ -117,6 +129,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findPostTags(where);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.postTag.findMany({ where });
   }
 
@@ -125,6 +138,7 @@ export class DatabaseAdapter {
       const results = await Promise.all(data.map(d => memoryDb.createPostTag(d)));
       return results;
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.postTag.createMany({ data });
   }
 
@@ -133,6 +147,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createUserInterest(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.userInterest.create({ data });
   }
 
@@ -140,6 +155,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findUserInterests(where);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.userInterest.findMany({ where });
   }
 
@@ -148,6 +164,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createChat(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.chat.create({ data });
   }
 
@@ -155,6 +172,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findChat(id);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.chat.findUnique({ where: { id } });
   }
 
@@ -162,6 +180,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findChats(where);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.chat.findMany({ where });
   }
 
@@ -169,6 +188,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.deleteChat(id);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.chat.delete({ where: { id } });
   }
 
@@ -177,6 +197,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createChatMember(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.chatMember.create({ data });
   }
 
@@ -184,6 +205,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.findChatMembers(where);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.chatMember.findMany({ where });
   }
 
@@ -192,6 +214,7 @@ export class DatabaseAdapter {
       const results = await Promise.all(data.map(d => memoryDb.createChatMember(d)));
       return results;
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.chatMember.createMany({ data });
   }
 
@@ -200,6 +223,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.createMessage(data);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.message.create({ data });
   }
 
@@ -208,6 +232,7 @@ export class DatabaseAdapter {
       return memoryDb.findMessages(where, take, cursor);
     }
     
+    if (!prisma) throw new Error('Prisma not initialized');
     const query: any = { 
       where: { chatId: where.chatId },
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
@@ -227,6 +252,7 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.$queryRaw<T>(query);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     const result = await prisma.$queryRaw`${query}`;
     return result as T[];
   }
@@ -235,15 +261,17 @@ export class DatabaseAdapter {
     if (this.isMemoryDb) {
       return memoryDb.$disconnect();
     }
+    if (!prisma) return;
     return prisma.$disconnect();
   }
 
   // Transaction support
   async transaction<T>(callback: (tx: any) => Promise<T>): Promise<T> {
     if (this.isMemoryDb) {
-      // For memory DB, just execute the callback directly
+      // For memory DB, just execute callback directly
       return callback(this);
     }
+    if (!prisma) throw new Error('Prisma not initialized');
     return prisma.$transaction(callback);
   }
 }
