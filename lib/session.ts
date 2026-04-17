@@ -19,24 +19,29 @@ export async function getSessionUser() {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
 
-  const session = await prisma.session.findFirst({
-    where: { token, expiresAt: { gt: new Date() } },
-    include: {
-      user: {
-        include: {
-          interests: { select: { topic: true } },
+  try {
+    const session = await prisma.session.findFirst({
+      where: { token, expiresAt: { gt: new Date() } },
+      include: {
+        user: {
+          include: {
+            interests: { select: { topic: true } },
+          },
         },
       },
-    },
-  });
+    });
 
-  if (!session) return null;
-  
-  // Check if user is suspended (using raw query to avoid TypeScript issues)
-  const user = session.user as any;
-  if (user.suspended) return null; // Reject suspended users
-  
-  return session.user;
+    if (!session) return null;
+    
+    // Check if user is suspended (using raw query to avoid TypeScript issues)
+    const user = session.user as any;
+    if (user.suspended) return null; // Reject suspended users
+    
+    return session.user;
+  } catch (error) {
+    console.error("Session error:", error);
+    return null;
+  }
 }
 
 /** Raw Set-Cookie value — some Next runtimes drop `cookies().set` / `res.cookies.set`; headers are reliable. */
