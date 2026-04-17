@@ -1,18 +1,18 @@
 import { cookies } from "next/headers";
 import type { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db-adapter";
 import { SESSION_COOKIE, SESSION_MS } from "@/lib/constants";
 import crypto from "crypto";
 
 export async function createSession(userId: string) {
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + SESSION_MS);
-  await prisma.session.create({ data: { userId, token, expiresAt } });
+  await db.sessionCreate({ userId, token, expiresAt });
   return { token, expiresAt };
 }
 
 export async function destroySession(token: string) {
-  await prisma.session.deleteMany({ where: { token } });
+  await db.sessionDelete({ token });
 }
 
 export async function getSessionUser() {
@@ -20,24 +20,18 @@ export async function getSessionUser() {
   if (!token) return null;
 
   try {
-    const session = await prisma.session.findFirst({
-      where: { token, expiresAt: { gt: new Date() } },
-      include: {
-        user: {
-          include: {
-            interests: { select: { topic: true } },
-          },
-        },
-      },
-    });
-
-    if (!session) return null;
+    const session = await db.sessionFind({ token });
+    if (!session || session.expiresAt <= new Date()) return null;
     
-    // Check if user is suspended (using raw query to avoid TypeScript issues)
-    const user = session.user as any;
-    if (user.suspended) return null; // Reject suspended users
+    const user = await db.userFind({ id: session.userId });
+    if (!user || user.suspended) return null;
     
-    return session.user;
+    const interests = await db.userInterestFindMany({ userId: user.id });
+    
+    return {
+      ...user,
+      interests: interests.map(i => ({ topic: i.topic }))
+    };
   } catch (error) {
     console.error("Session error:", error);
     return null;

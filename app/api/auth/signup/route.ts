@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { hashPassword } from "@/lib/password";
+import bcrypt from "bcryptjs";
+import { db } from "@/lib/db-adapter";
+import { createSession, attachSessionCookie } from "@/lib/session";
 import { normalizeTopics } from "@/lib/normalize";
-import { attachSessionCookie, createSession } from "@/lib/session";
 import { TOPIC_COUNT } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
@@ -35,20 +35,18 @@ export async function POST(req: Request) {
     );
   }
 
-  const exists = await prisma.user.findUnique({ where: { username } });
+  const exists = await db.userFind({ username });
   if (exists) {
     return NextResponse.json({ error: "Username already taken" }, { status: 409 });
   }
 
-  const passwordHash = await hashPassword(password);
+  const passwordHash = await bcrypt.hash(password, 10);
 
-  const user = await prisma.$transaction(async (tx) => {
-    const u = await tx.user.create({
-      data: { username, passwordHash, age },
-    });
-    await tx.userInterest.createMany({
-      data: normalized.map((topic) => ({ userId: u.id, topic })),
-    });
+  const user = await db.transaction(async (tx) => {
+    const u = await tx.userCreate({ username, passwordHash, age, suspended: false });
+    await tx.userInterestCreateMany(
+      normalized.map((topic) => ({ userId: u.id, topic }))
+    );
     return u;
   });
 
