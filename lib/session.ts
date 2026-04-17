@@ -31,6 +31,11 @@ export async function getSessionUser() {
   });
 
   if (!session) return null;
+  
+  // Check if user is suspended (using raw query to avoid TypeScript issues)
+  const user = session.user as any;
+  if (user.suspended) return null; // Reject suspended users
+  
   return session.user;
 }
 

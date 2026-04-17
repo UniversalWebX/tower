@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 const createSchema = z.object({
   title: z.string().min(2).max(140),
-  videoUrl: z.string().min(8).max(2048),
+  videoUrl: z.string().min(8).max(2048).optional(),
   ageMin: z.number().int().min(1).max(120),
   ageMax: z.number().int().min(1).max(120),
   tags: z.array(z.string()).min(TAG_MIN).max(TAG_MAX),
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       data: {
         authorId: user.id,
         title,
-        videoUrl,
+        ...(videoUrl && { videoUrl }),
         ageMin,
         ageMax,
       },

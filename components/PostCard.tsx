@@ -2,12 +2,13 @@
 
 import { memo } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { toEmbedSrc } from "@/lib/video";
 
 export type FeedPost = {
   id: string;
   title: string;
-  videoUrl: string;
+  videoUrl?: string;
   ageMin: number;
   ageMax: number;
   score: number;
@@ -16,7 +17,12 @@ export type FeedPost = {
 };
 
 function PostCardInner({ post, index }: { post: FeedPost; index: number }) {
-  const embed = toEmbedSrc(post.videoUrl);
+  const router = useRouter();
+  const embed = post.videoUrl ? toEmbedSrc(post.videoUrl) : null;
+
+  const handleClick = () => {
+    router.push(`/posts/${post.id}`);
+  };
 
   return (
     <motion.article
@@ -24,7 +30,8 @@ function PostCardInner({ post, index }: { post: FeedPost; index: number }) {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.03, 0.24), duration: 0.35 }}
-      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] ring-1 ring-white/5"
+      onClick={handleClick}
+      className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] ring-1 ring-white/5 cursor-pointer hover:border-cyan-400/30"
     >
       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
         <div className="absolute -inset-px bg-gradient-to-br from-violet-500/15 via-transparent to-cyan-400/10" />
@@ -50,24 +57,32 @@ function PostCardInner({ post, index }: { post: FeedPost; index: number }) {
             ) : null}
           </div>
         </div>
-        <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
-          {embed.kind === "youtube" ? (
-            <iframe
-              title={post.title}
-              className="aspect-video w-full"
-              src={embed.src}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              loading="lazy"
-            />
-          ) : embed.kind === "video" ? (
-            <video className="aspect-video w-full" controls preload="metadata" src={embed.src} />
-          ) : (
+        {embed ? (
+          <div className="overflow-hidden rounded-xl border border-white/10 bg-black/40">
+            {embed.kind === "youtube" ? (
+              <iframe
+                title={post.title}
+                className="aspect-video w-full"
+                src={embed.src}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+              />
+            ) : embed.kind === "video" ? (
+              <video className="aspect-video w-full" controls preload="metadata" src={embed.src} />
+            ) : (
+              <div className="flex aspect-video items-center justify-center px-4 text-center text-xs text-zinc-500">
+                Invalid video URL format.
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-dashed border-white/20 bg-black/20">
             <div className="flex aspect-video items-center justify-center px-4 text-center text-xs text-zinc-500">
-              Paste a YouTube watch URL or direct .mp4 link for inline playback.
+              Text-only post
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </motion.article>
   );

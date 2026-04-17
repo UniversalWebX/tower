@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const links = [
   { href: "/feed", label: "Feed" },
@@ -10,15 +11,35 @@ const links = [
   { href: "/chats", label: "Chats" },
 ];
 
+const ADMIN_USERS = ["Admin", "DarianBayan", "TowerAdmin"];
+
 export function TowerNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function getCurrentUser() {
+      try {
+        const res = await fetch("/api/me", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentUser(data.username);
+        }
+      } catch (err) {
+        // Ignore errors
+      }
+    }
+    getCurrentUser();
+  }, []);
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     router.push("/");
     router.refresh();
   }
+
+  const isAdmin = currentUser && ADMIN_USERS.includes(currentUser);
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-black/40 backdrop-blur-xl">
@@ -43,6 +64,18 @@ export function TowerNav() {
                 </Link>
               );
             })}
+            {isAdmin && (
+              <Link href="/admin" className="relative px-3 py-1.5 text-sm font-medium text-rose-300">
+                {pathname === "/admin" && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-full bg-rose-500/20 ring-1 ring-rose-500/30"
+                    transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                  />
+                )}
+                <span className="relative">Admin</span>
+              </Link>
+            )}
           </nav>
         </div>
         <button

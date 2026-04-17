@@ -32,5 +32,13 @@ export function rankPost(input: {
   const tags = tagOverlapScore(input.userTopics, input.postTags);
   const age = ageAffinityMultiplier(input.userAge, input.ageMin, input.ageMax);
   const fresh = freshnessBoost(input.createdAt);
-  return tags * 14 * age + fresh * 4 + age * 2.5;
+  
+  // Enhanced algorithm with multiple factors
+  const tagScore = tags * 20; // Increased weight for tag relevance
+  const ageScore = age * 15; // Strong age targeting
+  const freshnessScore = fresh * 10; // Fresh content boost
+  const diversityBonus = input.postTags.length >= 10 ? 5 : 0; // Bonus for diverse tagging
+  const qualityBonus = tags >= 3 ? 8 : 0; // Bonus for well-matched content
+  
+  return tagScore + ageScore + freshnessScore + diversityBonus + qualityBonus;
 }
