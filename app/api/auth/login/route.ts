@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db-adapter";
 import { verifyPassword } from "@/lib/password";
 import { attachSessionCookie, createSession } from "@/lib/session";
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
   const { password } = parsed.data;
   const username = parsed.data.username.trim().toLowerCase();
-  const user = await prisma.user.findUnique({ where: { username } });
+  const user = await db.userFind({ username });
   if (!user) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
@@ -32,10 +32,7 @@ export async function POST(req: Request) {
 
   const session = await createSession(user.id);
 
-  const interests = await prisma.userInterest.findMany({
-    where: { userId: user.id },
-    select: { topic: true },
-  });
+  const interests = await db.userInterestFindMany({ userId: user.id });
 
   const res = NextResponse.json({
     user: {
