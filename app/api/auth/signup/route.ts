@@ -44,9 +44,9 @@ export async function POST(req: Request) {
 
   const user = await db.transaction(async (tx) => {
     const u = await tx.userCreate({ username, passwordHash, age, suspended: false });
-    await tx.userInterestCreateMany(
-      normalized.map((topic) => ({ userId: u.id, topic }))
-    );
+    for (const topic of normalized) {
+      await tx.userInterestCreate({ userId: u.id, topic });
+    }
     return u;
   });
 
