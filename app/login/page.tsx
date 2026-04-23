@@ -22,7 +22,8 @@ export default function LoginPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Login failed");
-      window.location.assign("/feed");
+      // Use Next.js router for proper navigation
+      window.location.href = "/feed";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error");
     } finally {

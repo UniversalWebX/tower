@@ -33,12 +33,18 @@ export function rankPost(input: {
   const age = ageAffinityMultiplier(input.userAge, input.ageMin, input.ageMax);
   const fresh = freshnessBoost(input.createdAt);
   
-  // Enhanced algorithm with multiple factors
-  const tagScore = tags * 20; // Increased weight for tag relevance
-  const ageScore = age * 15; // Strong age targeting
-  const freshnessScore = fresh * 10; // Fresh content boost
-  const diversityBonus = input.postTags.length >= 10 ? 5 : 0; // Bonus for diverse tagging
-  const qualityBonus = tags >= 3 ? 8 : 0; // Bonus for well-matched content
+  // Enhanced scoring factors
+  const tagBonus = tags > 0 ? Math.log(tags + 1) * 8 : 0;
+  const agePenalty = Math.abs(input.userAge - (input.ageMin + input.ageMax) / 2) * 0.1;
+  const recencyBonus = fresh > 0.5 ? fresh * 6 : fresh * 3;
+  const diversityBonus = input.postTags.length > 3 ? 2 : 0;
   
-  return tagScore + ageScore + freshnessScore + diversityBonus + qualityBonus;
+  // Final sophisticated score
+  return Math.max(0, 
+    tags * 12 * age + 
+    recencyBonus + 
+    tagBonus + 
+    diversityBonus - 
+    agePenalty
+  );
 }

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const links = [
-  { href: "/feed", label: "Feed" },
+  { href: "/feed", label: "Racks" },
   { href: "/create", label: "Upload" },
   { href: "/chats", label: "Chats" },
 ];

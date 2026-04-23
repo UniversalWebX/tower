@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db-adapter";
 import { rankPost } from "@/lib/algorithm";
 import { FEED_CANDIDATE_POOL } from "@/lib/constants";
 
@@ -18,29 +18,16 @@ export async function GET(req: Request) {
   const offset = clamp(Number(url.searchParams.get("offset") ?? 0) || 0, 0, 10_000);
   const limit = clamp(Number(url.searchParams.get("limit") ?? 18) || 18, 1, 40);
 
-  const topicSet = new Set(user.interests.map((i) => i.topic));
+  const topicSet = new Set(user.interests.map((i: any) => i.topic));
 
-  const pool = await prisma.post.findMany({
-    take: FEED_CANDIDATE_POOL,
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      videoUrl: true,
-      ageMin: true,
-      ageMax: true,
-      createdAt: true,
-      author: { select: { id: true, username: true } },
-      tags: { select: { tag: true } },
-    },
-  });
+  const pool = await db.postFindMany();
 
   const ranked = pool
-    .map((p) => {
-      const tags = p.tags.map((t) => t.tag);
+    .map((p: any) => {
+      const tags = p.tags ? p.tags.map((t: any) => t.tag) : [];
       const score = rankPost({
         userAge: user.age,
-        userTopics: topicSet,
+        userTopics: topicSet as Set<string>,
         postTags: tags,
         ageMin: p.ageMin,
         ageMax: p.ageMax,
@@ -48,7 +35,7 @@ export async function GET(req: Request) {
       });
       return { ...p, tags, score };
     })
-    .sort((a, b) => b.score - a.score);
+    .sort((a: any, b: any) => b.score - a.score);
 
   const slice = ranked.slice(offset, offset + limit);
   const nextOffset = offset + slice.length;

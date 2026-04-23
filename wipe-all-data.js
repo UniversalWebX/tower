@@ -6,7 +6,7 @@ async function wipeAllData() {
   
   try {
     // Get all posts and delete them
-    const posts = await memoryDb.findPosts({});
+    const posts = await memoryDb.findPosts();
     console.log(`Found ${posts.length} posts to delete...`);
     
     for (const post of posts) {
@@ -14,8 +14,12 @@ async function wipeAllData() {
     }
     console.log(`✅ Deleted ${posts.length} posts`);
     
-    // Get all users and delete them
-    const users = await memoryDb.findUsers({});
+    // Get all users and delete them (by iterating through all possible user IDs)
+    const users = [];
+    for (let i = 1; i <= 1000; i++) {
+      const user = await memoryDb.findUser({ id: i.toString() });
+      if (user) users.push(user);
+    }
     console.log(`Found ${users.length} users to delete...`);
     
     for (const user of users) {
@@ -34,7 +38,11 @@ async function wipeAllData() {
     console.log(`✅ Deleted ${users.length} users and their associated data`);
     
     // Get all chats and delete them
-    const chats = await memoryDb.findChats({});
+    const chats = [];
+    for (let i = 1; i <= 1000; i++) {
+      const chat = await memoryDb.findChat(i.toString());
+      if (chat) chats.push(chat);
+    }
     console.log(`Found ${chats.length} chats to delete...`);
     
     for (const chat of chats) {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db-adapter";
 import { getSessionUser } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -10,25 +10,17 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
 
   const { id } = await ctx.params;
   
-  const post = await prisma.post.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      title: true,
-      videoUrl: true,
-      ageMin: true,
-      ageMax: true,
-      createdAt: true,
-      author: { select: { id: true, username: true } },
-      tags: { select: { tag: true } },
-    },
-  });
-
+  const post = await db.postFind(id);
   if (!post) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
 
-  const tags = post.tags.map(t => t.tag);
+  // Get author and tags
+  const [author, tags] = await Promise.all([
+    db.userFind({ id: post.authorId }),
+    db.postTagFindMany({ postId: post.id })
+  ]);
+
   
   return NextResponse.json({
     ...post,
@@ -44,11 +36,7 @@ export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }
   const { id } = await ctx.params;
   
   // Check if user owns the post or is admin
-  const post = await prisma.post.findUnique({
-    where: { id },
-    select: { authorId: true },
-  });
-
+  const post = await db.postFind(id);
   if (!post) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 });
   }
@@ -59,9 +47,7 @@ export async function DELETE(req: Request, ctx: { params: Promise<{ id: string }
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  await prisma.post.delete({
-    where: { id },
-  });
+  await db.postDelete(post.id);
 
   return NextResponse.json({ success: true });
 }

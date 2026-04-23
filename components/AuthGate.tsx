@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -18,11 +19,13 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       } catch {
         data = {};
       }
-      if (!data?.user) {
+      if (data?.user) {
+        setUser(data.user);
+        setReady(true);
+      } else {
         router.replace("/login");
         return;
       }
-      setReady(true);
     })();
     return () => {
       cancelled = true;

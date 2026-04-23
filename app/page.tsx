@@ -7,12 +7,10 @@ export default function Home() {
         <div className="space-y-6">
           <p className="tower-enter text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/90">Tower</p>
           <h1 className="tower-enter tower-enter-delay-1 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Video that climbs to the right people — by tags, topics, and age.
+            tower social beta 
           </h1>
           <p className="tower-enter tower-enter-delay-2 max-w-2xl text-base leading-relaxed text-zinc-400">
-            On signup you choose five topics; every upload carries 7–30 tags and an explicit age band. The feed ranks a
-            large candidate pool in one query, then scores in-memory for overlap, age affinity, and freshness. Chats batch
-            inserts for group and DM traffic, and the interface stays dark, animated, and motion-respecting.
+            pink fluffy unicorns dancing on rainbows
           </p>
         </div>
         <div className="tower-enter tower-enter-delay-3 mt-10 flex flex-wrap gap-3">

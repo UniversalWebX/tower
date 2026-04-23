@@ -21,6 +21,15 @@ const blockChatSchema = z.object({
   user2: z.string().min(1),
 });
 
+const deleteAnyPostSchema = z.object({
+  reason: z.string().optional(),
+});
+
+const deletePostByIdSchema = z.object({
+  postId: z.string().min(1),
+  reason: z.string().optional(),
+});
+
 async function isAdmin(user: any) {
   return ADMIN_USERS.includes(user.username);
 }
@@ -112,6 +121,63 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json({ success: true });
+      }
+
+      case "deleteAnyPost": {
+        const parsed = deleteAnyPostSchema.safeParse(json.data);
+        if (!parsed.success) {
+          return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+        }
+
+        const posts = await db.postFindMany();
+        if (posts.length === 0) {
+          return NextResponse.json({ error: "No posts to delete" }, { status: 404 });
+        }
+
+        // Delete a random post
+        const randomPost = posts[Math.floor(Math.random() * posts.length)];
+        await db.postDelete(randomPost.id);
+
+        return NextResponse.json({ 
+          success: true, 
+          message: `Deleted post: ${randomPost.title}`,
+          deletedPost: randomPost
+        });
+      }
+
+      case "deletePostById": {
+        const parsed = deletePostByIdSchema.safeParse(json.data);
+        if (!parsed.success) {
+          return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+        }
+
+        const post = await db.postFind(parsed.data.postId);
+        if (!post) {
+          return NextResponse.json({ error: "Post not found" }, { status: 404 });
+        }
+
+        await db.postDelete(parsed.data.postId);
+
+        return NextResponse.json({ 
+          success: true, 
+          message: `Deleted post: ${post.title}`,
+          deletedPost: post
+        });
+      }
+
+      case "wipePosts": {
+        const posts = await db.postFindMany();
+        let deletedCount = 0;
+
+        for (const post of posts) {
+          await db.postDelete(post.id);
+          deletedCount++;
+        }
+
+        return NextResponse.json({ 
+          success: true, 
+          message: `Deleted ${deletedCount} posts` 
+        });
       }
 
       default:

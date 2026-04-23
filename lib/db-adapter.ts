@@ -1,16 +1,22 @@
 import { prisma } from './prisma';
 import { memoryDb, useMemoryDb, type User, type Session, type Post, type PostTag, type UserInterest, type Chat, type ChatMember, type Message } from './memory-db';
+import { encryptedDb } from './encrypted-db-adapter';
 
-// Database adapter that works with both Prisma and memory database
+// Database adapter that works with both Prisma, memory database, and encrypted storage
 export class DatabaseAdapter {
   private isMemoryDb: boolean;
+  private useEncryptedStorage: boolean;
 
   constructor() {
     this.isMemoryDb = useMemoryDb;
+    this.useEncryptedStorage = true; // Always use encrypted storage for better data persistence
   }
 
   // User operations
   async userCreate(data: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) {
+    if (this.useEncryptedStorage) {
+      return encryptedDb.userCreate(data);
+    }
     if (this.isMemoryDb) {
       return memoryDb.createUser(data);
     }
@@ -19,6 +25,9 @@ export class DatabaseAdapter {
   }
 
   async userFind(where: { id?: string; username?: string }) {
+    if (this.useEncryptedStorage) {
+      return encryptedDb.userFind(where);
+    }
     if (this.isMemoryDb) {
       return memoryDb.findUser(where);
     }

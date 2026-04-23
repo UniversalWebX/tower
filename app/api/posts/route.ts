@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   const json = await req.json().catch(() => null);
   const parsed = createSchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid post payload" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid rack payload" }, { status: 400 });
   }
 
   const { title, videoUrl, ageMin, ageMax, tags } = parsed.data;
