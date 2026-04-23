@@ -7,11 +7,6 @@ const nextConfig: NextConfig = {
     },
     optimizePackageImports: ["framer-motion", "@tanstack/react-virtual"],
   },
-  output: 'export',
-  trailingSlash: true,
-  distDir: 'out',
-  // Disable API routes for static export
-  skipTrailingSlashRedirect: true,
   // Disable Next.js dev panel
   devIndicators: {
     position: 'bottom-right',

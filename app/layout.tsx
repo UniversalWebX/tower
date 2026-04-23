@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Tower — topic & age aware video",
-  description: "Tower ranks video posts using tags, your interests, and age fit, with optimized batched feeds and chat.",
+  title: "Tower",
+  description: "ine eleeven wash an inide job",
 };
 
 export const viewport: Viewport = {
