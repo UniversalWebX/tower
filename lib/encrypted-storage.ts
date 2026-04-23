@@ -33,16 +33,27 @@ interface EncryptedData {
 }
 
 class EncryptedStorage {
-  private static readonly ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'tower-default-key-32-chars-long';
+  private static readonly ENCRYPTION_KEY = this.normalizeKey(process.env.ENCRYPTION_KEY || 'tower-default-key-32-chars-long');
   private static readonly ALGORITHM = 'aes-256-gcm';
   private static readonly IV_LENGTH = 16;
   private static readonly TAG_LENGTH = 16;
   private static readonly DATA_FILE = join(process.cwd(), 'data', 'tower-data.enc');
 
+  private static normalizeKey(key: string): string {
+    // Ensure key is exactly 32 bytes (256 bits) for AES-256
+    if (key.length < 32) {
+      // Pad with zeros if too short
+      return key.padEnd(32, '0').slice(0, 32);
+    } else if (key.length > 32) {
+      // Truncate if too long
+      return key.slice(0, 32);
+    }
+    return key;
+  }
+
   private static encrypt(text: string): { encrypted: string; iv: string; tag: string } {
     const iv = crypto.randomBytes(this.IV_LENGTH);
-    const cipher = crypto.createCipher(this.ALGORITHM, this.ENCRYPTION_KEY);
-    cipher.setAAD(Buffer.from('tower-data', 'utf8'));
+    const cipher = crypto.createCipheriv(this.ALGORITHM, Buffer.from(this.ENCRYPTION_KEY, 'utf8'), iv);
     
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
@@ -57,8 +68,7 @@ class EncryptedStorage {
   }
 
   private static decrypt(encrypted: string, iv: string, tag: string): string {
-    const decipher = crypto.createDecipher(this.ALGORITHM, this.ENCRYPTION_KEY);
-    decipher.setAAD(Buffer.from('tower-data', 'utf8'));
+    const decipher = crypto.createDecipheriv(this.ALGORITHM, Buffer.from(this.ENCRYPTION_KEY, 'utf8'), Buffer.from(iv, 'hex'));
     decipher.setAuthTag(Buffer.from(tag, 'hex'));
     
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
