@@ -11,7 +11,7 @@ const links = [
   { href: "/chats", label: "Chats" },
 ];
 
-const ADMIN_USERS = ["Admin", "DarianBayan", "TowerAdmin"];
+const ADMIN_USERS = ["Admin", "DarianBayan", "TowerAdmin", "SuperAdmin", "Moderator", "Developer"];
 
 export function TowerNav() {
   const pathname = usePathname();
