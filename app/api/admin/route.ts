@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db-adapter";
 import { getSessionUser } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -57,10 +57,7 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: "Cannot suspend admin user" }, { status: 400 });
         }
 
-        await prisma.user.update({
-          where: { username: parsed.data.username },
-          data: { suspended: parsed.data.suspended },
-        });
+        await db.userUpdate(targetUser.id, { suspended: parsed.data.suspended });
 
         return NextResponse.json({ success: true });
       }
@@ -71,9 +68,7 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: "Invalid data" }, { status: 400 });
         }
 
-        const targetUser = await prisma.user.findUnique({
-          where: { username: parsed.data.username },
-        });
+        const targetUser = await db.userFind({ username: parsed.data.username });
 
         if (!targetUser) {
           return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -84,9 +79,7 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: "Cannot delete admin user" }, { status: 400 });
         }
 
-        await prisma.user.delete({
-          where: { username: parsed.data.username },
-        });
+        await db.userDelete(targetUser.id);
 
         return NextResponse.json({ success: true });
       }
@@ -97,34 +90,25 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: "Invalid data" }, { status: 400 });
         }
 
-        const user1 = await prisma.user.findUnique({
-          where: { username: parsed.data.user1 },
-        });
-
-        const user2 = await prisma.user.findUnique({
-          where: { username: parsed.data.user2 },
-        });
+        const user1 = await db.userFind({ username: parsed.data.user1 });
+        const user2 = await db.userFind({ username: parsed.data.user2 });
 
         if (!user1 || !user2) {
           return NextResponse.json({ error: "One or both users not found" }, { status: 404 });
         }
 
         // Find existing DM chat between these users
-        const existingChat = await prisma.chat.findFirst({
-          where: {
-            type: "DM",
-            AND: [
-              { members: { some: { userId: user1.id } } },
-              { members: { some: { userId: user2.id } } },
-            ],
-          },
+        const existingChat = await db.chatFind({
+          type: "DM",
+          AND: [
+            { members: { some: { userId: user1.id } } },
+            { members: { some: { userId: user2.id } } },
+          ],
         });
 
         if (existingChat) {
           // Delete the chat and all its messages
-          await prisma.chat.delete({
-            where: { id: existingChat.id },
-          });
+          await db.chatDelete(existingChat.id);
         }
 
         return NextResponse.json({ success: true });
