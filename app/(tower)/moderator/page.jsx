@@ -9,7 +9,8 @@ export default function ModeratorPage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [actionLoading, setActionLoading] = useState(null);
+  const [actionLoading, setActionLoading] = useState({});
+  const [clearingChats, setClearingChats] = useState(false);
   const [suspendHours, setSuspendHours] = useState({});
 
   const MODERATORS = ['darianbayan', 'admin'];
@@ -171,14 +172,42 @@ export default function ModeratorPage() {
   };
 
   const wipeAllData = async () => {
-    if (confirm('This will wipe ALL user data. Are you sure?')) {
-      try {
-        await fetch('/api/admin/wipe-all-data', { method: 'POST' });
-        alert('Data wiped successfully');
-        await loadData();
-      } catch (error) {
-        alert('Failed to wipe data');
+    if (!confirm('Are you sure you want to wipe ALL data? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/wipe-data', { method: 'POST' });
+      if (res.ok) {
+        alert('All data has been wiped successfully');
+        loadData();
+      } else {
+        const data = await res.json();
+        alert(`Error: ${data.error}`);
       }
+    } catch (error) {
+      alert('Error wiping data');
+    }
+  };
+
+  const clearChatData = async () => {
+    if (!confirm('Are you sure you want to clear ALL chat data? This will delete all messages, chats, and chat members. This action cannot be undone.')) {
+      return;
+    }
+
+    setClearingChats(true);
+    try {
+      const res = await fetch('/api/clear-chats', { method: 'POST' });
+      if (res.ok) {
+        alert('All chat data has been cleared successfully');
+      } else {
+        const data = await res.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Error clearing chat data');
+    } finally {
+      setClearingChats(false);
     }
   };
 
@@ -344,6 +373,13 @@ export default function ModeratorPage() {
               className="rounded-lg bg-rose-600 px-4 py-3 text-white font-medium hover:bg-rose-700"
             >
               Wipe All Data
+            </button>
+            <button
+              onClick={clearChatData}
+              disabled={clearingChats}
+              className="rounded-lg bg-orange-600 px-4 py-3 text-white font-medium hover:bg-orange-700 disabled:opacity-50"
+            >
+              {clearingChats ? 'Clearing...' : 'Clear Chat Data'}
             </button>
           </div>
         </div>

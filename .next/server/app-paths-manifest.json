@@ -1,8 +1,15 @@
 {
   "/api/messages/route": "app/api/messages/route.js",
-  "/(tower)/moderator/page": "app/(tower)/moderator/page.js",
-  "/(tower)/privacy/page": "app/(tower)/privacy/page.js",
-  "/(tower)/about/page": "app/(tower)/about/page.js",
-  "/(tower)/terms/page": "app/(tower)/terms/page.js",
-  "/(tower)/chats-new/page": "app/(tower)/chats-new/page.js"
+  "/api/feed/route": "app/api/feed/route.js",
+  "/api/chats/route": "app/api/chats/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/users/profile/route": "app/api/users/profile/route.js",
+  "/api/posts/route": "app/api/posts/route.js",
+  "/page": "app/page.js",
+  "/login/page": "app/login/page.js",
+  "/signup/page": "app/signup/page.js",
+  "/(tower)/chats-new/page": "app/(tower)/chats-new/page.js",
+  "/(tower)/feed/page": "app/(tower)/feed/page.js",
+  "/(tower)/create/page": "app/(tower)/create/page.js",
+  "/(tower)/profile/page": "app/(tower)/profile/page.js"
 }
