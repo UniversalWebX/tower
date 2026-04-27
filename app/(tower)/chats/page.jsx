@@ -9,11 +9,41 @@ export default function ChatsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [activeCall, setActiveCall] = useState(null);
+  const [incomingCall, setIncomingCall] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     loadChats();
+    loadActiveCalls();
+    checkIncomingCalls();
   }, []);
+
+  const loadActiveCalls = async () => {
+    try {
+      const res = await fetch('/api/voice-calls');
+      if (res.ok) {
+        const data = await res.json();
+        const userCall = data.calls.find(call => call.status === 'connected');
+        setActiveCall(userCall || null);
+      }
+    } catch (error) {
+      console.error('Error loading active calls:', error);
+    }
+  };
+
+  const checkIncomingCalls = async () => {
+    try {
+      const res = await fetch('/api/voice-calls');
+      if (res.ok) {
+        const data = await res.json();
+        const ringingCall = data.calls.find(call => call.status === 'ringing');
+        setIncomingCall(ringingCall || null);
+      }
+    } catch (error) {
+      console.error('Error checking incoming calls:', error);
+    }
+  };
 
   const loadChats = async () => {
     try {
@@ -35,6 +65,76 @@ export default function ChatsPage() {
     router.push(`/chats/${chatId}`);
   };
 
+  const startVoiceCall = async (toUserId) => {
+    try {
+      const res = await fetch('/api/voice-calls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'start', toUserId })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setActiveCall(data.call);
+        setIncomingCall(null);
+      }
+    } catch (error) {
+      console.error('Error starting voice call:', error);
+    }
+  };
+
+  const acceptCall = async (callId) => {
+    try {
+      const res = await fetch('/api/voice-calls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'accept', callId })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setActiveCall(data.call);
+        setIncomingCall(null);
+      }
+    } catch (error) {
+      console.error('Error accepting call:', error);
+    }
+  };
+
+  const rejectCall = async (callId) => {
+    try {
+      const res = await fetch('/api/voice-calls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reject', callId })
+      });
+
+      if (res.ok) {
+        setIncomingCall(null);
+      }
+    } catch (error) {
+      console.error('Error rejecting call:', error);
+    }
+  };
+
+  const endCall = async () => {
+    if (!activeCall) return;
+
+    try {
+      const res = await fetch('/api/voice-calls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'end', callId: activeCall.id })
+      });
+
+      if (res.ok) {
+        setActiveCall(null);
+      }
+    } catch (error) {
+      console.error('Error ending call:', error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
@@ -54,6 +154,54 @@ export default function ChatsPage() {
         </div>
       )}
 
+      {/* Voice Call Interface */}
+      {(activeCall || incomingCall) && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed top-20 left-1/2 right-1/2 z-50"
+        >
+          <div className="bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl p-4 max-w-md mx-auto">
+            <div className="text-center mb-4">
+              <div className="text-lg font-semibold text-zinc-100 mb-2">
+                {activeCall ? 'Active Call' : 'Incoming Call'}
+              </div>
+              <div className="text-sm text-zinc-400">
+                {activeCall ? `Connected with ${activeCall.toUserId}` : `${incomingCall.fromUserId} is calling...`}
+              </div>
+            </div>
+            
+            <div className="flex justify-center space-x-4">
+              {activeCall && (
+                <button
+                  onClick={endCall}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                >
+                  End Call
+                </button>
+              )}
+              
+              {incomingCall && (
+                <>
+                  <button
+                    onClick={() => acceptCall(incomingCall.id)}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => rejectCall(incomingCall.id)}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  >
+                    Reject
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {!loading && !error && (
         <div className="space-y-4">
           {chats.length === 0 ? (
@@ -68,7 +216,19 @@ export default function ChatsPage() {
             </div>
           ) : (
             chats.map((chat) => (
-              <ChatCard key={chat.id} chat={chat} onClick={() => openChat(chat.id)} />
+              <div key={chat.id} className="flex items-center justify-between p-3 border border-zinc-700 rounded-lg">
+                <div className="flex-1 cursor-pointer" onClick={() => openChat(chat.id)}>
+                  <div className="font-medium text-zinc-100">{chat.name}</div>
+                  <div className="text-sm text-zinc-400">Click to open chat</div>
+                </div>
+                <button
+                  onClick={() => startVoiceCall(chat.otherUserId)}
+                  className="px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700"
+                  disabled={!!activeCall}
+                >
+                  📞 Call
+                </button>
+              </div>
             ))
           )}
         </div>

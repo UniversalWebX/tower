@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function TowerLayout({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [suspensionInfo, setSuspensionInfo] = useState(null);
+  const [siteSettings, setSiteSettings] = useState({ lockdown: false });
   const router = useRouter();
 
   useEffect(() => {
@@ -63,8 +64,26 @@ export default function TowerLayout({ children }) {
     );
   }
 
+  // Check if user is blocked by lockdown
+  const isBlockedByLockdown = siteSettings.lockdown && user && !MODERATORS.includes(user.username);
+
   return (
     <div className="min-h-screen bg-tower-dark">
+      
+      {/* Lockdown Banner */}
+      {siteSettings.lockdown && (
+        <div className="bg-rose-600/10 border-b border-rose-600/30 px-4 py-2">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-rose-400 text-sm">🔒</span>
+              <span className="text-rose-300 text-sm">
+                {isBlockedByLockdown ? 'Tower is currently in lockdown mode. Only moderators can access the site.' : 'Tower is currently in lockdown mode.'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="glass-effect border-b border-tower-gray/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -108,7 +127,12 @@ export default function TowerLayout({ children }) {
               <div className="hidden md:block">
                 <div className="flex items-center space-x-3">
                   <div className="text-right">
-                    <div className="text-sm font-medium text-tower-light">{user?.username}</div>
+                    <div 
+                      className="text-sm font-medium"
+                      style={{ color: user?.usernameColor || '#ffffff' }}
+                    >
+                      {user?.username}
+                    </div>
                   </div>
                   <div className="w-8 h-8 bg-gradient-to-br from-tower-primary to-tower-secondary rounded-full flex items-center justify-center">
                     <span className="text-white text-sm font-bold">
@@ -186,7 +210,19 @@ export default function TowerLayout({ children }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {children}
+          {isBlockedByLockdown ? (
+            <div className="text-center py-16">
+              <div className="text-rose-400 text-2xl mb-4">🔒 Tower is Locked Down</div>
+              <div className="text-zinc-400 mb-8">
+                Tower is currently in lockdown mode. Only moderators can access the site during this time.
+              </div>
+              <div className="text-zinc-500 text-sm">
+                Please check back later when the lockdown has been lifted.
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </motion.div>
       </main>
 

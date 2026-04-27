@@ -12,12 +12,17 @@ export default function ModeratorPage() {
   const [actionLoading, setActionLoading] = useState({});
   const [clearingChats, setClearingChats] = useState(false);
   const [suspendHours, setSuspendHours] = useState({});
+  const [pendingPosts, setPendingPosts] = useState([]);
+  const [consoleCommand, setConsoleCommand] = useState('');
+  const [consoleOutput, setConsoleOutput] = useState([]);
+  const [siteSettings, setSiteSettings] = useState({ lockdown: false });
 
-  const MODERATORS = ['darianbayan', 'admin'];
+  const MODERATORS = ['darianbayan', 'Admin'];
 
   useEffect(() => {
     checkAuth();
     loadData();
+    loadPendingPosts();
   }, []);
 
   const checkAuth = async () => {
@@ -79,7 +84,7 @@ export default function ModeratorPage() {
     } catch (error) {
       setError('Error suspending user');
     } finally {
-      setActionLoading(null);
+      setActionLoading('');
     }
   };
 
@@ -100,7 +105,7 @@ export default function ModeratorPage() {
     } catch (error) {
       setError('Error unsuspending user');
     } finally {
-      setActionLoading(null);
+      setActionLoading('');
     }
   };
 
@@ -125,7 +130,7 @@ export default function ModeratorPage() {
     } catch (error) {
       setError('Error deleting account');
     } finally {
-      setActionLoading(null);
+      setActionLoading('');
     }
   };
 
@@ -146,7 +151,7 @@ export default function ModeratorPage() {
     } catch (error) {
       setError('Error updating user');
     } finally {
-      setActionLoading(null);
+      setActionLoading('');
     }
   };
 
@@ -167,7 +172,7 @@ export default function ModeratorPage() {
     } catch (error) {
       setError('Error updating post');
     } finally {
-      setActionLoading(null);
+      setActionLoading('');
     }
   };
 
@@ -208,6 +213,98 @@ export default function ModeratorPage() {
       alert('Error clearing chat data');
     } finally {
       setClearingChats(false);
+    }
+  };
+
+  const loadPendingPosts = async () => {
+    try {
+      const res = await fetch('/api/moderator/pending-posts');
+      if (res.ok) {
+        const data = await res.json();
+        setPendingPosts(data.pendingPosts);
+      }
+    } catch (error) {
+      console.error('Error loading pending posts:', error);
+    }
+  };
+
+  
+  const executeConsoleCommand = async () => {
+    if (!consoleCommand.trim()) return;
+
+    const command = consoleCommand.trim();
+    setConsoleCommand('');
+    
+    // Add command to output
+    const newOutput = [{ type: 'command', text: `> ${command}` }, ...consoleOutput];
+    setConsoleOutput(newOutput);
+
+    try {
+      const res = await fetch('/api/moderator/console', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command })
+      });
+
+      const data = await res.json();
+      
+      if (res.ok) {
+        setConsoleOutput([
+          { type: 'success', text: data.message },
+          ...newOutput
+        ]);
+      } else {
+        setConsoleOutput([
+          { type: 'error', text: data.error },
+          ...newOutput
+        ]);
+      }
+    } catch (error) {
+      setConsoleOutput([
+        { type: 'error', text: 'Command execution failed' },
+        ...newOutput
+      ]);
+    }
+  };
+
+  const approvePost = async (postId) => {
+    try {
+      const res = await fetch('/api/moderator/pending-posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId, action: 'approve' })
+      });
+
+      if (res.ok) {
+        await loadPendingPosts();
+        await loadData();
+      } else {
+        const data = await res.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Error approving post');
+    }
+  };
+
+  const rejectPost = async (postId) => {
+    if (!confirm('Are you sure you want to reject this post?')) return;
+
+    try {
+      const res = await fetch('/api/moderator/pending-posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId, action: 'reject' })
+      });
+
+      if (res.ok) {
+        await loadPendingPosts();
+      } else {
+        const data = await res.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Error rejecting post');
     }
   };
 
@@ -266,9 +363,9 @@ export default function ModeratorPage() {
                       <button
                         onClick={() => unsuspendUser(user.id)}
                         className="rounded-lg bg-green-600 px-3 py-1 text-xs font-medium text-white"
-                        disabled={actionLoading?.startsWith(`unsuspend-${user.id}`)}
+                        disabled={actionLoading?.startsWith?.(`unsuspend-${user.id}`)}
                       >
-                        {actionLoading?.startsWith(`unsuspend-${user.id}`) ? '...' : 'Unsuspend'}
+                        {actionLoading?.startsWith?.(`unsuspend-${user.id}`) ? '...' : 'Unsuspend'}
                       </button>
                     ) : (
                       <>
@@ -278,7 +375,7 @@ export default function ModeratorPage() {
                           className="rounded-lg border border-white/10 bg-zinc-800 px-2 py-1 text-xs text-zinc-300 w-16"
                           value={suspendHours[user.id] || ''}
                           onChange={(e) => setSuspendHours(prev => ({ ...prev, [user.id]: e.target.value }))}
-                          disabled={actionLoading?.startsWith(`suspend-${user.id}`)}
+                          disabled={actionLoading?.startsWith?.(`suspend-${user.id}`)}
                         />
                         <button
                           onClick={() => {
@@ -288,7 +385,7 @@ export default function ModeratorPage() {
                             }
                           }}
                           className="rounded-lg bg-orange-600 px-2 py-1 text-xs font-medium text-white"
-                          disabled={actionLoading?.startsWith(`suspend-${user.id}`) || !suspendHours[user.id]}
+                          disabled={actionLoading?.startsWith?.(`suspend-${user.id}`) || !suspendHours[user.id]}
                         >
                           Suspend
                         </button>
@@ -302,7 +399,7 @@ export default function ModeratorPage() {
                           ? 'bg-amber-600 text-white' 
                           : 'bg-zinc-700 text-zinc-300'
                       }`}
-                      disabled={actionLoading?.startsWith(`shadow-${user.id}`)}
+                      disabled={actionLoading?.startsWith?.(`shadow-${user.id}`)}
                     >
                       {user.shadowBanned ? 'Unshadow' : 'Shadow'}
                     </button>
@@ -310,7 +407,7 @@ export default function ModeratorPage() {
                     <button
                       onClick={() => deleteAccount(user.id)}
                       className="rounded-lg bg-rose-600 px-3 py-1 text-xs font-medium text-white"
-                      disabled={actionLoading?.startsWith(`delete-${user.id}`)}
+                      disabled={actionLoading?.startsWith?.(`delete-${user.id}`)}
                     >
                       Delete
                     </button>
@@ -350,7 +447,7 @@ export default function ModeratorPage() {
                             ? 'bg-green-600 text-white' 
                             : 'bg-zinc-700 text-zinc-300'
                         }`}
-                        disabled={actionLoading?.startsWith(`boost-${post.id}`)}
+                        disabled={actionLoading?.startsWith?.(`boost-${post.id}`)}
                       >
                         {post.boosted ? 'Deboost' : 'Boost'}
                       </button>
@@ -383,6 +480,122 @@ export default function ModeratorPage() {
             </button>
           </div>
         </div>
+      </motion.div>
+
+      {/* Moderator Console */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+        <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-6">
+          <h2 className="text-xl font-semibold text-zinc-50 mb-4">Moderator Console</h2>
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={consoleCommand}
+                onChange={(e) => setConsoleCommand(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && executeConsoleCommand()}
+                placeholder="Enter command (sptc, lockdown, moderator)..."
+                className="flex-1 rounded-lg border border-white/10 bg-zinc-800 px-3 py-2 text-sm text-zinc-300 placeholder-zinc-500"
+              />
+              <button
+                onClick={executeConsoleCommand}
+                className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-700"
+              >
+                Execute
+              </button>
+            </div>
+            
+            {consoleOutput.length > 0 && (
+              <div className="rounded-lg border border-white/10 bg-zinc-900/40 p-3 h-48 overflow-y-auto">
+                <div className="font-mono text-xs space-y-1">
+                  {consoleOutput.map((output, index) => (
+                    <div
+                      key={index}
+                      className={
+                        output.type === 'success' ? 'text-green-400' :
+                        output.type === 'error' ? 'text-rose-400' :
+                        'text-zinc-300'
+                      }
+                    >
+                      {output.text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="text-xs text-zinc-500">
+              Available commands:
+              <br />• sptc [color] [username] - Set username color
+              <br />• lockdown - Toggle website lockdown
+              <br />• moderator [add/revoke] [username] - Manage moderators
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Pending Posts */}
+      {pendingPosts.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-6">
+            <h2 className="text-xl font-semibold text-zinc-50 mb-4">
+              Pending Posts ({pendingPosts.length})
+            </h2>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {pendingPosts.map((post) => (
+                <div key={post.id} className="border border-white/10 rounded-lg p-4 bg-zinc-900/40">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="font-medium text-zinc-100 mb-1">{post.title}</div>
+                      <div className="text-sm text-zinc-400 mb-2">
+                        By: {post.author?.username} (Age: {post.author?.age})
+                      </div>
+                      <div className="text-sm text-zinc-300 whitespace-pre-wrap">{post.content}</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => approvePost(post.id)}
+                      className="rounded-lg bg-green-600 px-3 py-1 text-xs font-medium text-white hover:bg-green-700"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => rejectPost(post.id)}
+                      className="rounded-lg bg-rose-600 px-3 py-1 text-xs font-medium text-white hover:bg-rose-700"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Site Status */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+        <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-6">
+          <h2 className="text-xl font-semibold text-zinc-50 mb-4">Site Status</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-zinc-900/40">
+              <span className="text-zinc-300">Lockdown Status</span>
+              <span className={`px-2 py-1 rounded text-xs font-medium ${
+                siteSettings.lockdown 
+                  ? 'bg-rose-600 text-white' 
+                  : 'bg-green-600 text-white'
+              }`}>
+                {siteSettings.lockdown ? 'LOCKED' : 'OPEN'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-zinc-900/40">
+              <span className="text-zinc-300">Pending Posts</span>
+              <span className="px-2 py-1 rounded bg-amber-600 text-white text-xs font-medium">
+                {pendingPosts.length}
+              </span>
+            </div>
+          </div>
+                  </div>
       </motion.div>
     </div>
   );

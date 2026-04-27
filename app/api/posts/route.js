@@ -42,7 +42,7 @@ export async function POST(req) {
     const tagsText = normalizedTags.join(', ');
     const fullContent = content ? `${content}\n\nTags: ${tagsText}` : `Tags: ${tagsText}`;
 
-    const post = storage.createPost({
+    const postData = {
       authorId: user.id,
       title,
       content: fullContent,
@@ -50,11 +50,24 @@ export async function POST(req) {
       ageMin,
       ageMax,
       boosted: false
-    });
+    };
 
-    console.log('Post created:', post.id);
-
-    return NextResponse.json({ id: post.id });
+    // Check if user needs post approval (ages 9-11)
+    if (user.age >= 9 && user.age <= 11) {
+      // Add to pending posts for moderation
+      const pendingPost = storage.addPendingPost(postData);
+      console.log('Post added to pending queue:', pendingPost.id);
+      return NextResponse.json({ 
+        id: pendingPost.id, 
+        pending: true,
+        message: "Your post is pending moderator approval"
+      });
+    } else {
+      // Create post directly
+      const post = storage.createPost(postData);
+      console.log('Post created:', post.id);
+      return NextResponse.json({ id: post.id });
+    }
   } catch (error) {
     console.error('Posts error:', error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
