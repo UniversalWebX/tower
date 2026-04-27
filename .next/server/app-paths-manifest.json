@@ -1,9 +1,8 @@
 {
-  "/api/chats/route": "app/api/chats/route.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/messages/route": "app/api/messages/route.js",
   "/(tower)/moderator/page": "app/(tower)/moderator/page.js",
-  "/(tower)/about/page": "app/(tower)/about/page.js",
   "/(tower)/privacy/page": "app/(tower)/privacy/page.js",
+  "/(tower)/about/page": "app/(tower)/about/page.js",
   "/(tower)/terms/page": "app/(tower)/terms/page.js",
   "/(tower)/chats-new/page": "app/(tower)/chats-new/page.js"
 }
