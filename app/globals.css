@@ -1,159 +1,208 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #05060a;
-  --foreground: #e4e4e7;
-}
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
-}
-
-html {
-  color-scheme: dark;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-}
-
-/* GPU-friendly background: no JS, no extra network */
-.tower-backdrop {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: -10;
-  overflow: hidden;
-  background: #05060a;
-}
-
-.tower-backdrop::before,
-.tower-backdrop::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(72px);
-  will-change: transform;
-}
-
-.tower-backdrop::before {
-  left: -18%;
-  top: -16%;
-  width: min(70vh, 520px);
-  height: min(70vh, 520px);
-  background: rgba(124, 58, 237, 0.28);
-  animation: tower-drift-a 20s ease-in-out infinite;
-}
-
-.tower-backdrop::after {
-  right: -20%;
-  top: 6%;
-  width: min(60vh, 460px);
-  height: min(60vh, 460px);
-  background: rgba(34, 211, 238, 0.14);
-  animation: tower-drift-b 24s ease-in-out infinite;
-}
-
-.tower-backdrop .tower-backdrop-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(900px 600px at 50% 120%, rgba(15, 23, 42, 0.92), transparent);
-}
-
-@keyframes tower-drift-a {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
+/* Custom Base Styles */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
   }
-  50% {
-    transform: translate3d(36px, 22px, 0) scale(1.05);
+  
+  body {
+    @apply bg-tower-dark text-tower-light;
+    @apply antialiased;
+  }
+  
+  * {
+    @apply border-tower-gray/20;
   }
 }
 
-@keyframes tower-drift-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
+/* Custom Component Styles */
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-tower-primary to-tower-secondary;
+    @apply text-white font-medium py-2.5 px-6 rounded-xl;
+    @apply hover:shadow-tower-lg transform hover:scale-105;
+    @apply transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-tower-primary/50;
   }
-  50% {
-    transform: translate3d(-28px, 36px, 0) scale(1.06);
+  
+  .btn-secondary {
+    @apply bg-tower-darker border border-tower-gray/30;
+    @apply text-tower-light font-medium py-2.5 px-6 rounded-xl;
+    @apply hover:bg-tower-gray/10 hover:border-tower-gray/50;
+    @apply transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-tower-primary/50;
+  }
+  
+  .btn-ghost {
+    @apply text-tower-gray font-medium py-2 px-4 rounded-lg;
+    @apply hover:text-tower-light hover:bg-tower-gray/10;
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  .card {
+    @apply bg-tower-darker/50 backdrop-blur-tower;
+    @apply border border-tower-gray/20 rounded-2xl;
+    @apply shadow-tower;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-tower-lg hover:border-tower-gray/30;
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .input-field {
+    @apply bg-tower-darker/50 border border-tower-gray/30 rounded-xl;
+    @apply text-tower-light placeholder-tower-gray/50;
+    @apply px-4 py-3;
+    @apply focus:outline-none focus:border-tower-primary focus:ring-2 focus:ring-tower-primary/20;
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  .nav-link {
+    @apply text-tower-gray hover:text-tower-light;
+    @apply px-3 py-2 rounded-lg text-sm font-medium;
+    @apply hover:bg-tower-gray/10;
+    @apply transition-all duration-200 ease-out;
+  }
+  
+  .nav-link-active {
+    @apply text-tower-light bg-tower-primary/20;
+    @apply border-l-2 border-tower-primary;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-tower-primary to-tower-secondary;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  .glass-effect {
+    @apply bg-tower-darker/30 backdrop-blur-tower;
+    @apply border border-tower-gray/20;
+  }
+  
+  .tag {
+    @apply bg-tower-primary/20 text-tower-primary;
+    @apply px-3 py-1 rounded-full text-xs font-medium;
+    @apply border border-tower-primary/30;
+  }
+  
+  .badge {
+    @apply bg-tower-accent/20 text-tower-accent;
+    @apply px-2 py-1 rounded text-xs font-medium;
+  }
+  
+  .alert-success {
+    @apply bg-green-500/20 text-green-400 border border-green-500/30;
+    @apply px-4 py-3 rounded-xl;
+  }
+  
+  .alert-error {
+    @apply bg-red-500/20 text-red-400 border border-red-500/30;
+    @apply px-4 py-3 rounded-xl;
+  }
+  
+  .alert-warning {
+    @apply bg-yellow-500/20 text-yellow-400 border border-yellow-500/30;
+    @apply px-4 py-3 rounded-xl;
+  }
+  
+  .skeleton {
+    @apply bg-tower-gray/20 rounded-lg;
+    @apply animate-pulse;
   }
 }
 
-/* Lightweight hero / panel entrance (replaces Framer on public routes) */
-@keyframes tower-fade-up {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
+/* Custom Utility Classes */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .backdrop-glow {
+    backdrop-filter: blur(20px) saturate(180%);
+    background-color: rgba(15, 23, 42, 0.8);
+  }
+  
+  .hover-lift {
+    @apply transform transition-transform duration-200 ease-out;
+  }
+  
+  .hover-lift:hover {
+    @apply -translate-y-1;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .gradient-border {
+    background: linear-gradient(135deg, #6366f1, #06b6d4, #8b5cf6);
+    padding: 1px;
+    border-radius: 1rem;
+  }
+  
+  .gradient-border-inner {
+    background: #0f172a;
+    border-radius: calc(1rem - 1px);
+    padding: 1rem;
   }
 }
 
-.tower-enter {
-  opacity: 0;
-  animation: tower-fade-up 0.42s ease forwards;
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.tower-enter-delay-1 {
-  animation-delay: 0.06s;
-}
-.tower-enter-delay-2 {
-  animation-delay: 0.12s;
-}
-.tower-enter-delay-3 {
-  animation-delay: 0.18s;
+::-webkit-scrollbar-track {
+  @apply bg-tower-darker;
 }
 
-.tower-spin {
-  border-radius: 9999px;
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  border-top-color: rgba(103, 232, 249, 0.85);
-  animation: tower-spin 0.85s linear infinite;
+::-webkit-scrollbar-thumb {
+  @apply bg-tower-gray/50 rounded-full;
 }
 
-@keyframes tower-spin {
-  to {
-    transform: rotate(360deg);
-  }
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-tower-gray/70;
 }
 
+/* Selection Styles */
 ::selection {
-  background: rgba(124, 58, 237, 0.45);
-  color: #fafafa;
+  @apply bg-tower-primary/30 text-tower-light;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .tower-backdrop::before,
-  .tower-backdrop::after {
-    animation: none !important;
-  }
+/* Focus Styles */
+:focus-visible {
+  @apply outline-none ring-2 ring-tower-primary ring-offset-2 ring-offset-tower-dark;
+}
 
-  .tower-enter {
-    animation: none !important;
-    opacity: 1;
-    transform: none;
+/* Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
+  100% {
+    background-position: 200% 0;
+  }
+}
 
-  .tower-spin {
-    animation: none !important;
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
+.loading-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }

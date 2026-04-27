@@ -1,0 +1,222 @@
+{
+  "users": [
+    {
+      "username": "darianbayan",
+      "passwordHash": "$2a$10$bNqQqkWaXdYRPQbWVXYDnOnwg3r3PFzSkslcjV7DroB52w3UrTFha",
+      "age": 14,
+      "email": "darian.bayan2@gmail.com",
+      "bio": "Tower Developer/Owner\n",
+      "interests": [],
+      "suspended": false,
+      "shadowBanned": false,
+      "avatar": null,
+      "id": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "createdAt": "2026-04-26T16:40:41.420Z",
+      "updatedAt": "2026-04-26T17:08:49.839Z"
+    },
+    {
+      "username": "Test",
+      "passwordHash": "$2a$10$4ETkrsB9ECy4jDvCDX49NO6kg/fQo3cCwIUkhOCJ/.MuRnGgBUPx2",
+      "age": 32,
+      "email": null,
+      "bio": "testpanol",
+      "interests": [
+        "test_account"
+      ],
+      "suspended": false,
+      "shadowBanned": false,
+      "avatar": null,
+      "id": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "createdAt": "2026-04-26T18:26:27.238Z",
+      "updatedAt": "2026-04-26T23:58:32.838Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "946d2b69-a457-4ab8-b3d2-e6bd60df3501",
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "token": "bd86e23ab5fc04d2a21b5875a34932a2b086181e9b9bbf99ac1b6aef4055ee31",
+      "expiresAt": "2026-05-03T16:40:43.915Z",
+      "createdAt": "2026-04-26T16:40:43.915Z"
+    },
+    {
+      "id": "0a9061ac-9e21-4086-93ef-9907c2323080",
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "token": "9963886425e4605396b1157bbb885e50683eacd677d9592b1910727fe0ca0005",
+      "expiresAt": "2026-05-03T16:40:51.580Z",
+      "createdAt": "2026-04-26T16:40:51.580Z"
+    },
+    {
+      "id": "fe209cf4-fbd8-479f-89c2-8fd1b0b57dfd",
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "token": "d52cd7e7c16457335839ca0311a5df2b757a856572b14fa3659717771e76745f",
+      "expiresAt": "2026-05-03T17:19:53.867Z",
+      "createdAt": "2026-04-26T17:19:53.867Z"
+    },
+    {
+      "id": "4e241a4a-3a03-4717-b0ee-ff3891f45609",
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "token": "13af66d8db9f4653eacd03680dc59d1912a7b1e2cc796af4e3204963feff7c27",
+      "expiresAt": "2026-05-03T17:19:57.824Z",
+      "createdAt": "2026-04-26T17:19:57.824Z"
+    },
+    {
+      "id": "814c664f-25b7-419d-9b01-341feed353e8",
+      "userId": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "token": "952f44cff0c739500ed69d1a58d19a109c3df817d619027245c0f55f4d425470",
+      "expiresAt": "2026-05-03T18:26:34.719Z",
+      "createdAt": "2026-04-26T18:26:34.719Z"
+    }
+  ],
+  "posts": [],
+  "follows": [],
+  "messages": [
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "content": "Hello",
+      "id": "3f61f06e-202c-4fe6-b911-b23ba29dda82",
+      "createdAt": "2026-04-26T23:32:55.923Z",
+      "updatedAt": "2026-04-26T23:32:55.923Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "q",
+      "id": "906afe09-f203-4e93-912b-03f652a97934",
+      "createdAt": "2026-04-26T23:34:41.297Z",
+      "updatedAt": "2026-04-26T23:34:41.297Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "content": ":sob:",
+      "id": "18284ff4-5472-4c8e-b397-3cb097d853f2",
+      "createdAt": "2026-04-26T23:35:03.181Z",
+      "updatedAt": "2026-04-26T23:35:03.181Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "its inverted :sob:",
+      "id": "d172e4d4-d60a-49bb-962b-d87b3dc9359b",
+      "createdAt": "2026-04-26T23:35:50.038Z",
+      "updatedAt": "2026-04-26T23:35:50.038Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "they fixed it",
+      "id": "942ad598-6dd5-4045-88dc-efba35fab909",
+      "createdAt": "2026-04-26T23:40:18.078Z",
+      "updatedAt": "2026-04-26T23:40:18.078Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "the colours changed?",
+      "id": "4490c067-706b-407b-9ab8-c7bfad754365",
+      "createdAt": "2026-04-26T23:40:30.144Z",
+      "updatedAt": "2026-04-26T23:40:30.144Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "what",
+      "id": "5c63aee0-3dfa-4195-ae07-f7aa6fb99f20",
+      "createdAt": "2026-04-26T23:40:33.230Z",
+      "updatedAt": "2026-04-26T23:40:33.230Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "tf",
+      "id": "1230d6a5-ae75-48f8-b488-52b586ffc0d7",
+      "createdAt": "2026-04-26T23:40:35.108Z",
+      "updatedAt": "2026-04-26T23:40:35.108Z"
+    },
+    {
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "senderId": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "content": "nada",
+      "id": "49491aca-b093-42f3-9844-d6cf94ddc7fc",
+      "createdAt": "2026-04-26T23:40:49.893Z",
+      "updatedAt": "2026-04-26T23:40:49.893Z"
+    }
+  ],
+  "chats": [
+    {
+      "name": "a",
+      "type": "group",
+      "createdBy": "70f2f734-6361-460a-8eaf-4ce6a49851ff",
+      "id": "23c99cf1-5490-44cd-b200-85392db6397a",
+      "createdAt": "2026-04-26T17:23:19.046Z",
+      "updatedAt": "2026-04-26T17:23:19.046Z"
+    },
+    {
+      "type": "direct",
+      "createdBy": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "id": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "createdAt": "2026-04-26T23:32:04.566Z",
+      "updatedAt": "2026-04-26T23:40:49.898Z",
+      "lastMessage": "nada",
+      "lastMessageAt": "2026-04-26T23:40:49.893Z"
+    }
+  ],
+  "chatMembers": [
+    {
+      "id": "02ff4f4a-08c2-486a-8adf-1f615cb6f1fb",
+      "chatId": "23c99cf1-5490-44cd-b200-85392db6397a",
+      "userId": "2",
+      "joinedAt": "2026-04-26T17:23:19.050Z",
+      "lastReadAt": "2026-04-26T17:23:19.050Z"
+    },
+    {
+      "id": "5c4e336e-db65-4438-8a10-00012e480b47",
+      "chatId": "23c99cf1-5490-44cd-b200-85392db6397a",
+      "userId": "1",
+      "joinedAt": "2026-04-26T17:23:19.055Z",
+      "lastReadAt": "2026-04-26T17:23:19.055Z"
+    },
+    {
+      "id": "92c4f245-bf2c-4fab-add6-7dd40886fa70",
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "userId": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "joinedAt": "2026-04-26T23:32:04.572Z",
+      "lastReadAt": "2026-04-26T23:32:04.572Z"
+    },
+    {
+      "id": "3f6fd078-ac2b-48dd-b755-4356761c2cd6",
+      "chatId": "65d756bb-581b-401f-9e2a-71e5e9ffab21",
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "joinedAt": "2026-04-26T23:32:04.580Z",
+      "lastReadAt": "2026-04-26T23:32:04.580Z"
+    }
+  ],
+  "notifications": [],
+  "replies": [
+    {
+      "postId": "c9973c04-933b-4e53-adc9-48658c5d4691",
+      "authorId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "neat",
+      "id": "19382b8e-5b09-4de5-9614-6dff03f1a4a7",
+      "createdAt": "2026-04-26T17:54:17.628Z"
+    },
+    {
+      "postId": "0d2a7dc6-9226-4b72-b5bb-18dbe85d95bb",
+      "authorId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "content": "neat",
+      "id": "7d8b7553-1b32-4e42-a766-a404ba410bdf",
+      "createdAt": "2026-04-26T23:26:15.056Z"
+    }
+  ],
+  "votes": [
+    {
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "postId": "c9973c04-933b-4e53-adc9-48658c5d4691",
+      "type": "dislike",
+      "id": "70f78a7e-f953-47c7-9903-8f0dd443f493",
+      "createdAt": "2026-04-26T18:17:07.219Z"
+    }
+  ]
+}
