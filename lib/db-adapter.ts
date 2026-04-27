@@ -90,6 +90,9 @@ export class DatabaseAdapter {
 
   // Post operations
   async postCreate(data: Omit<Post, 'id' | 'createdAt'>) {
+    if (this.useEncryptedStorage) {
+      return encryptedDb.postCreate(data);
+    }
     if (this.isMemoryDb) {
       return memoryDb.createPost(data);
     }
@@ -98,6 +101,10 @@ export class DatabaseAdapter {
   }
 
   async postFind(id: string) {
+    if (this.useEncryptedStorage) {
+      const posts = await encryptedDb.postFind({ id });
+      return posts || null;
+    }
     if (this.isMemoryDb) {
       return memoryDb.findPost(id);
     }
@@ -106,6 +113,9 @@ export class DatabaseAdapter {
   }
 
   async postFindMany(where?: { authorId?: string }, take?: number, orderBy?: { createdAt: 'desc' }) {
+    if (this.useEncryptedStorage) {
+      return encryptedDb.postFindMany(where || {});
+    }
     if (this.isMemoryDb) {
       return memoryDb.findPosts(where, take, orderBy);
     }
@@ -118,6 +128,9 @@ export class DatabaseAdapter {
   }
 
   async postDelete(id: string) {
+    if (this.useEncryptedStorage) {
+      return encryptedDb.postDelete(id);
+    }
     if (this.isMemoryDb) {
       return memoryDb.deletePost(id);
     }
@@ -276,6 +289,10 @@ export class DatabaseAdapter {
 
   // Transaction support
   async transaction<T>(callback: (tx: any) => Promise<T>): Promise<T> {
+    if (this.useEncryptedStorage) {
+      // For encrypted storage, just execute callback directly
+      return callback(this);
+    }
     if (this.isMemoryDb) {
       // For memory DB, just execute callback directly
       return callback(this);
