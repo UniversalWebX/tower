@@ -511,12 +511,13 @@ export default function ModeratorPage() {
                     <div
                       key={index}
                       className={
-                        output.type === 'success' ? 'text-green-400' :
-                        output.type === 'error' ? 'text-rose-400' :
+                        output?.type === 'success' ? 'text-green-400' :
+                        output?.type === 'error' ? 'text-rose-400' :
+                        output?.type === 'command' ? 'text-cyan-400' :
                         'text-zinc-300'
                       }
                     >
-                      {output.text}
+                      {output?.text || output}
                     </div>
                   ))}
                 </div>

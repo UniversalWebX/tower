@@ -218,16 +218,18 @@ export default function ChatsPage() {
             chats.map((chat) => (
               <div key={chat.id} className="flex items-center justify-between p-3 border border-zinc-700 rounded-lg">
                 <div className="flex-1 cursor-pointer" onClick={() => openChat(chat.id)}>
-                  <div className="font-medium text-zinc-100">{chat.name}</div>
+                  <div className="font-medium text-zinc-100">{chat.name || chat.otherUser?.username || 'Unknown'}</div>
                   <div className="text-sm text-zinc-400">Click to open chat</div>
                 </div>
-                <button
-                  onClick={() => startVoiceCall(chat.otherUserId)}
-                  className="px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700"
-                  disabled={!!activeCall}
-                >
-                  📞 Call
-                </button>
+                {chat.otherUser && (
+                  <button
+                    onClick={() => startVoiceCall(chat.otherUser.userId)}
+                    className="px-3 py-1 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700"
+                    disabled={!!activeCall}
+                  >
+                    📞 Call
+                  </button>
+                )}
               </div>
             ))
           )}

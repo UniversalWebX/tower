@@ -50,7 +50,7 @@ export default function PrivacyPage() {
         <div className="rounded-2xl border border-white/10 bg-zinc-950/60 p-6">
           <h2 className="text-xl font-semibold text-zinc-50 mb-4">3. Data Storage and Security</h2>
           <p className="text-zinc-300 leading-relaxed">
-            All data is stored securely using JSON file storage. Passwords are hashed using bcrypt 
+            All data is stored securely using encrypted file storage. Passwords are hashed using bcrypt 
             and are never stored in plain text. We implement reasonable security measures to protect 
             your information, but no method of transmission over the internet is 100% secure.
           </p>

@@ -114,6 +114,12 @@ export default function TowerLayout({ children }) {
                 <Link href="/profile" className="nav-link">
                   Profile
                 </Link>
+                <Link href="/storey" className="nav-link bg-gradient-to-r from-cyan-500 to-purple-500 text-white">
+                  Storey
+                </Link>
+                <Link href="/settings" className="nav-link">
+                  ⚙️ Settings
+                </Link>
                 {MODERATORS.includes(user?.username) && (
                   <Link href="/moderator" className="nav-link text-tower-accent">
                     Moderator
@@ -127,11 +133,21 @@ export default function TowerLayout({ children }) {
               <div className="hidden md:block">
                 <div className="flex items-center space-x-3">
                   <div className="text-right">
-                    <div 
-                      className="text-sm font-medium"
-                      style={{ color: user?.usernameColor || '#ffffff' }}
-                    >
-                      {user?.username}
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="text-sm font-medium"
+                        style={{ color: user?.usernameColor || '#ffffff' }}
+                      >
+                        {user?.username}
+                      </div>
+                      {user?.hasStoreySubscription && (
+                        <img 
+                          src="/storeyicon.png" 
+                          alt="Storey" 
+                          className="w-4 h-4"
+                          title="Storey Subscriber"
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="w-8 h-8 bg-gradient-to-br from-tower-primary to-tower-secondary rounded-full flex items-center justify-center">
@@ -183,6 +199,12 @@ export default function TowerLayout({ children }) {
               <Link href="/profile" className="block nav-link w-full text-left">
                 Profile
               </Link>
+              <Link href="/storey" className="block nav-link w-full text-left bg-gradient-to-r from-cyan-500 to-purple-500 text-white">
+                Storey
+              </Link>
+              <Link href="/settings" className="block nav-link w-full text-left">
+                ⚙️ Settings
+              </Link>
               {MODERATORS.includes(user?.username) && (
                 <Link href="/moderator" className="block nav-link w-full text-left text-tower-accent">
                   Moderator
@@ -204,26 +226,72 @@ export default function TowerLayout({ children }) {
       </nav>
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {isBlockedByLockdown ? (
-            <div className="text-center py-16">
-              <div className="text-rose-400 text-2xl mb-4">🔒 Tower is Locked Down</div>
-              <div className="text-zinc-400 mb-8">
-                Tower is currently in lockdown mode. Only moderators can access the site during this time.
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+        {/* Background effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-20 right-1/4 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl animate-pulse animation-delay-1000" />
+          <div className="absolute bottom-0 left-1/3 w-56 h-56 bg-pink-500/10 rounded-full blur-3xl animate-pulse animation-delay-2000" />
+        </div>
+        
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={router.pathname}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ 
+              duration: 0.4, 
+              ease: [0.4, 0.0, 0.2, 1] 
+            }}
+            className="relative z-10"
+          >
+            {isBlockedByLockdown ? (
+              <motion.div 
+                className="text-center py-16"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.div 
+                  className="text-rose-400 text-4xl mb-4"
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  🔒
+                </motion.div>
+                <div className="text-rose-400 text-2xl mb-4">Tower is Locked Down</div>
+                <div className="text-zinc-400 mb-8">
+                  Tower is currently in lockdown mode. Only moderators can access the site during this time.
+                </div>
+                <div className="text-zinc-500 text-sm">
+                  Please check back later when the lockdown has been lifted.
+                </div>
+              </motion.div>
+            ) : (
+              <div className="relative">
+                {/* Loading overlay */}
+                {loading && (
+                  <motion.div 
+                    className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-2xl"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <div className="flex flex-col items-center space-y-4">
+                      <div className="relative">
+                        <div className="w-16 h-16 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
+                        <div className="absolute inset-0 w-16 h-16 border-4 border-purple-500/20 border-b-purple-500 rounded-full animate-spin animation-delay-200" />
+                      </div>
+                      <div className="text-zinc-400 animate-pulse">Loading Tower...</div>
+                    </div>
+                  </motion.div>
+                )}
+                {children}
               </div>
-              <div className="text-zinc-500 text-sm">
-                Please check back later when the lockdown has been lifted.
-              </div>
-            </div>
-          ) : (
-            children
-          )}
-        </motion.div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Footer */}

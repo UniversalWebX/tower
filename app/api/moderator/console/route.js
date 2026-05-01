@@ -12,7 +12,7 @@ export async function POST(req) {
   }
 
   // Check if user is moderator
-  const MODERATORS = ['darianbayan', 'admin'];
+  const MODERATORS = ['darianbayan', 'Admin'];
   if (!MODERATORS.includes(user.username)) {
     return NextResponse.json({ error: "Forbidden: Moderator access required" }, { status: 403 });
   }

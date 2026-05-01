@@ -41,11 +41,9 @@ function rankPost(input) {
 }
 
 export async function GET(req) {
-  console.log('Feed API called');
   const user = session.getSessionFromRequest(req);
   
   if (!user) {
-    console.log('No user found, returning 401');
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -91,15 +89,23 @@ export async function GET(req) {
   const slice = ranked.slice(offset, offset + limit);
   const nextOffset = offset + slice.length;
 
-  // Add author info
+  // Add author info and Storey subscription info
   const postsWithAuthors = slice.map(post => {
     const author = storage.findUserById(post.authorId);
+    const isStoreySubscriber = author?.hasStoreySubscription || false;
+    
+    // Automatically boost posts from Storey subscribers
+    const boostedScore = isStoreySubscriber ? post.score + 25 : post.score;
+    
     return {
       ...post,
+      score: boostedScore,
+      boosted: post.boosted || isStoreySubscriber,
       author: author ? {
         id: author.id,
         username: author.username,
-        avatar: author.avatar
+        avatar: author.avatar,
+        hasStoreySubscription: isStoreySubscriber
       } : null
     };
   });
