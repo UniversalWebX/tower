@@ -5,7 +5,7 @@ A complete social platform built from scratch with Next.js, featuring posts, fee
 ## Features
 
 ### 🏗️ Core System
-- **Simple JSON Storage**: Clean, file-based data storage system
+- **Simple but encrypted JSON Storage**: Clean, file-based data storage system
 - **User Authentication**: Secure login/signup with password hashing
 - **Session Management**: Cookie-based sessions with 7-day expiration
 - **Comprehensive Validation**: Input validation for all user data
@@ -18,10 +18,10 @@ A complete social platform built from scratch with Next.js, featuring posts, fee
 - **Social Features**: Follow/unfollow users, view profiles, social interactions
 
 ### 🛡️ Moderation System
-- **User Management**: Suspend users (1 hour to 30 days), delete accounts, shadow ban
+- **User Management**: Suspend users (1 hour to 30 days, or more), delete accounts, shadow banning
 - **Post Management**: Boost posts for visibility, delete inappropriate content
 - **Admin Panel**: Complete moderator dashboard with user and post management
-- **Data Wipe**: Emergency data clearing by SuperAdmin
+- **Data Wipe**: Emergency data clearing in case of a data breach.
 
 ### 📁 File System
 - **Media Upload**: Support for images and videos (50MB limit)
