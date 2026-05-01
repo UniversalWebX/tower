@@ -6234,5 +6234,42 @@
     }
   ],
   "userReports": [],
-  "userPreferences": []
+  "userPreferences": [
+    {
+      "userId": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
+      "language": "en",
+      "theme": "dark",
+      "notifications": {
+        "posts": true,
+        "messages": true,
+        "follows": true,
+        "mentions": true
+      },
+      "privacy": {
+        "showAge": false,
+        "showEmail": false,
+        "allowDirectMessages": true
+      },
+      "createdAt": "2026-05-01T20:13:38.527Z",
+      "updatedAt": "2026-05-01T20:23:46.676Z"
+    },
+    {
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "language": "en",
+      "theme": "dark",
+      "notifications": {
+        "posts": true,
+        "messages": true,
+        "follows": true,
+        "mentions": true
+      },
+      "privacy": {
+        "showAge": true,
+        "showEmail": false,
+        "allowDirectMessages": true
+      },
+      "createdAt": "2026-05-01T20:25:29.396Z",
+      "updatedAt": "2026-05-01T20:25:29.396Z"
+    }
+  ]
 }

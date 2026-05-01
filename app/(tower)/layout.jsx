@@ -118,7 +118,7 @@ export default function TowerLayout({ children }) {
                   Storey
                 </Link>
                 <Link href="/settings" className="nav-link">
-                  ⚙️ Settings
+                  Settings
                 </Link>
                 {MODERATORS.includes(user?.username) && (
                   <Link href="/moderator" className="nav-link text-tower-accent">
@@ -203,7 +203,7 @@ export default function TowerLayout({ children }) {
                 Storey
               </Link>
               <Link href="/settings" className="block nav-link w-full text-left">
-                ⚙️ Settings
+                Settings
               </Link>
               {MODERATORS.includes(user?.username) && (
                 <Link href="/moderator" className="block nav-link w-full text-left text-tower-accent">
