@@ -47,6 +47,34 @@
       "createdAt": "2026-04-27T01:53:36.974Z",
       "updatedAt": "2026-04-29T01:09:29.445Z",
       "suspendedUntil": null
+    },
+    {
+      "username": "Sammytheginat",
+      "passwordHash": "$2a$10$Z2BOtj..1ugulCy7V9gS7e/DgK1zOjJQ8K13jmKOUSwWzADI9ZhQK",
+      "age": 41,
+      "email": "sam.naghibi@hotmail.com",
+      "bio": null,
+      "interests": [],
+      "suspended": false,
+      "shadowBanned": false,
+      "avatar": null,
+      "id": "6a507fe1-1b89-4f7d-921c-d1604094db81",
+      "createdAt": "2026-05-03T21:37:36.318Z",
+      "updatedAt": "2026-05-03T21:37:36.319Z"
+    },
+    {
+      "username": "3ierfeoifj",
+      "passwordHash": "$2a$10$c/KuZwepXYcuZVAdWTwH1uuPq/quDpCiU9eqmPAk6zjGYYbfkhcQ.",
+      "age": 37,
+      "email": null,
+      "bio": null,
+      "interests": [],
+      "suspended": false,
+      "shadowBanned": false,
+      "avatar": null,
+      "id": "b7b2531a-5258-45f1-adea-54720a8b46f8",
+      "createdAt": "2026-05-03T21:41:15.955Z",
+      "updatedAt": "2026-05-03T21:41:15.955Z"
     }
   ],
   "sessions": [
@@ -93,11 +121,18 @@
       "createdAt": "2026-04-27T01:53:47.392Z"
     },
     {
-      "id": "f9e2a6cf-58b9-41a0-ba42-74cf675cee11",
+      "id": "98d7e92c-ed4e-4b2e-9410-7eac753cd5fa",
       "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
-      "token": "97f9f0b0c0afbbcb3ee417a420e32b25380a1710faab0c072e3c3d79f992878c",
-      "expiresAt": "2026-05-04T03:06:04.241Z",
-      "createdAt": "2026-04-27T03:06:04.241Z"
+      "token": "100f81ff54fa176ebed170b91d0d62c81be66b5121617ebbc1222c2d10051955",
+      "expiresAt": "2026-05-11T18:51:52.601Z",
+      "createdAt": "2026-05-04T18:51:52.601Z"
+    },
+    {
+      "id": "73cded6d-bed1-4445-bf43-f2a38312d3fa",
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "token": "c12e7a2e963a928a45a23125ac8f2e32b07fe361d7933f22190d7a483a41fb81",
+      "expiresAt": "2026-05-12T16:46:49.372Z",
+      "createdAt": "2026-05-05T16:46:49.372Z"
     }
   ],
   "posts": [],
@@ -121,6 +156,13 @@
       "updatedAt": "2026-04-28T21:07:56.752Z",
       "lastMessage": "a",
       "lastMessageAt": "2026-04-28T21:07:56.745Z"
+    },
+    {
+      "type": "direct",
+      "createdBy": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "id": "dad54450-7c60-4e4b-8bc8-8ef2f5304457",
+      "createdAt": "2026-05-03T21:44:48.161Z",
+      "updatedAt": "2026-05-03T21:44:48.161Z"
     }
   ],
   "chatMembers": [
@@ -137,6 +179,20 @@
       "userId": "04e4a9bf-47e7-4eb9-be67-c0dc882c325e",
       "joinedAt": "2026-04-28T21:03:15.323Z",
       "lastReadAt": "2026-04-29T20:23:14.005Z"
+    },
+    {
+      "id": "df8c7e82-0be8-4b20-8cef-0a0bccc31f24",
+      "chatId": "dad54450-7c60-4e4b-8bc8-8ef2f5304457",
+      "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
+      "joinedAt": "2026-05-03T21:44:48.169Z",
+      "lastReadAt": "2026-05-03T21:44:48.169Z"
+    },
+    {
+      "id": "2cb904b1-3d5f-4cbb-8429-4c91abb9d15f",
+      "chatId": "dad54450-7c60-4e4b-8bc8-8ef2f5304457",
+      "userId": "b7b2531a-5258-45f1-adea-54720a8b46f8",
+      "joinedAt": "2026-05-03T21:44:48.176Z",
+      "lastReadAt": "2026-05-03T21:44:48.176Z"
     }
   ],
   "notifications": [],
@@ -6251,7 +6307,7 @@
         "allowDirectMessages": true
       },
       "createdAt": "2026-05-01T20:13:38.527Z",
-      "updatedAt": "2026-05-01T20:23:46.676Z"
+      "updatedAt": "2026-05-01T20:33:57.384Z"
     },
     {
       "userId": "8ed3e1aa-99b7-4b76-938c-ed7b07c1cd76",
@@ -6269,7 +6325,7 @@
         "allowDirectMessages": true
       },
       "createdAt": "2026-05-01T20:25:29.396Z",
-      "updatedAt": "2026-05-01T20:25:29.396Z"
+      "updatedAt": "2026-05-05T16:47:17.126Z"
     }
   ]
 }

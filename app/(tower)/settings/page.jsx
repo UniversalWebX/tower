@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "@/lib/TranslationContext";
+import { useTheme } from "@/lib/ThemeContext";
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -18,22 +20,29 @@ const languages = [
   { code: 'zh', name: '中文', flag: '🇨🇳' }
 ];
 
-const themes = [
-  { code: 'dark', name: 'Dark Theme', icon: '🌙' },
-  { code: 'light', name: 'Light Theme', icon: '☀️' },
-  { code: 'auto', name: 'Auto Theme', icon: '🌓' }
+const availableThemes = [
+  { code: 'dark', name: 'Dark Mode', icon: '🌙', description: 'Classic dark theme with purple accents' },
+  { code: 'light', name: 'Light Mode', icon: '☀️', description: 'Clean light theme with blue accents' },
+  { code: 'ocean', name: 'Ocean', icon: '🌊', description: 'Deep blue aquatic theme' },
+  { code: 'sunset', name: 'Sunset', icon: '🌅', description: 'Warm orange and pink theme' },
+  { code: 'forest', name: 'Forest', icon: '🌲', description: 'Natural green theme' },
+  { code: 'galaxy', name: 'Galaxy', icon: '🌌', description: 'Purple cosmic theme' },
+  { code: 'monochrome', name: 'Monochrome', icon: '⚫', description: 'Classic black and white' },
+  { code: 'auto', name: 'Auto', icon: '🌓', description: 'Follow system preference' }
 ];
 
 export default function SettingsPage() {
   const [user, setUser] = useState(null);
-  const [preferences, setPreferences] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [preferences, setPreferences] = useState({});
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const [activeTab, setActiveTab] = useState("general");
-  const [emailSaving, setEmailSaving] = useState(false);
   const [emailValue, setEmailValue] = useState("");
   const router = useRouter();
+  
+  // Use global contexts
+  const { currentLanguage, setLanguage, t, languages } = useTranslation();
+  const { currentTheme, setTheme, themes, applyTheme } = useTheme();
 
   useEffect(() => {
     checkAuth();
@@ -62,20 +71,14 @@ export default function SettingsPage() {
         const data = await res.json();
         setPreferences(data.preferences);
         
-        // Apply saved theme on load
-        if (data.preferences.theme) {
-          document.documentElement.className = data.preferences.theme === 'light' 
-            ? 'light' 
-            : data.preferences.theme === 'auto' 
-              ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-              : 'dark';
-          document.documentElement.setAttribute('data-theme', data.preferences.theme);
+        // Set current language from preferences
+        if (data.preferences.language) {
+          setLanguage(data.preferences.language);
         }
         
-        // Apply saved language on load
-        if (data.preferences.language) {
-          localStorage.setItem('tower-language', data.preferences.language);
-          console.log('Language loaded:', data.preferences.language);
+        // Apply saved theme on load
+        if (data.preferences.theme) {
+          setTheme(data.preferences.theme);
         }
       }
     } catch (error) {
@@ -90,6 +93,8 @@ export default function SettingsPage() {
     setMessage("");
 
     try {
+      console.log('Saving preferences:', updates);
+      
       const res = await fetch('/api/settings/preferences', {
         method: 'POST',
         headers: {
@@ -101,34 +106,30 @@ export default function SettingsPage() {
       if (res.ok) {
         const data = await res.json();
         setPreferences(data.preferences);
+        console.log('Preferences saved successfully:', data.preferences);
         
         // Apply theme changes immediately
         if (updates.theme) {
-          document.documentElement.className = updates.theme === 'light' 
-            ? 'light' 
-            : updates.theme === 'auto' 
-              ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-              : 'dark';
-          document.documentElement.setAttribute('data-theme', updates.theme);
+          console.log('Applying theme:', updates.theme);
+          setTheme(updates.theme);
         }
         
         // Apply language changes
         if (updates.language) {
-          // Store language preference for future use
-          localStorage.setItem('tower-language', updates.language);
-          // You could implement actual language switching here
-          console.log('Language changed to:', updates.language);
+          console.log('Changing language to:', updates.language);
+          setLanguage(updates.language);
         }
         
         setMessage("Settings saved successfully!");
         setTimeout(() => setMessage(""), 3000);
       } else {
+        console.error('Failed to save preferences:', res.status);
         setMessage("Failed to save settings");
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
-      console.error('Failed to save preferences:', error);
-      setMessage("Something went wrong");
+      console.error('Save preferences error:', error);
+      setMessage("Error saving settings");
       setTimeout(() => setMessage(""), 3000);
     } finally {
       setSaving(false);
@@ -240,7 +241,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-400">Loading...</div>
+        <div className="text-zinc-400">{t('loading')}</div>
       </div>
     );
   }
@@ -248,7 +249,7 @@ export default function SettingsPage() {
   if (!user || !preferences) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-400">Error loading settings</div>
+        <div className="text-zinc-400">{t('loading')}</div>
       </div>
     );
   }
@@ -263,7 +264,7 @@ export default function SettingsPage() {
           className="text-center mb-8"
         >
           <h1 className="text-4xl font-bold text-zinc-50 mb-2 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Settings
+            {t('settingsTitle')}
           </h1>
           <p className="text-zinc-400">
             Customize your Tower experience
@@ -279,22 +280,21 @@ export default function SettingsPage() {
         >
           <div className="flex space-x-2">
             {[
-              { id: 'general', name: 'General', icon: '⚙️' },
-              { id: 'profile', name: 'Profile', icon: '👤' },
-              { id: 'notifications', name: 'Notifications', icon: '🔔' },
-              { id: 'privacy', name: 'Privacy', icon: '🔒' }
+              { id: 'general', name: 'general', icon: '⚙️' },
+              { id: 'profile', name: 'profile', icon: '👤' },
+              { id: 'notifications', name: 'notifications', icon: '🔔' },
+              { id: 'privacy', name: 'privacy', icon: '🔒' }
             ].map((tab) => (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 px-4 py-2 rounded-lg transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white'
-                    : 'text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50'
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-6 py-3 font-medium transition-colors ${
+                  activeTab === tab
+                    ? 'text-zinc-50 border-b-2 border-cyan-500'
+                    : 'text-zinc-400 hover:text-zinc-300'
                 }`}
               >
-                <span className="mr-2">{tab.icon}</span>
-                {tab.name}
+                {t(tab)}
               </button>
             ))}
           </div>
@@ -323,7 +323,13 @@ export default function SettingsPage() {
                   {languages.map((lang) => (
                     <button
                       key={lang.code}
-                      onClick={() => savePreferences({ language: lang.code })}
+                      onClick={() => {
+                        console.log('Language button clicked:', lang.code);
+                        // Change language immediately for instant feedback
+                        setLanguage(lang.code);
+                        // Then save preferences
+                        savePreferences({ language: lang.code });
+                      }}
                       disabled={saving}
                       className={`p-3 rounded-lg border transition-all duration-200 ${
                         preferences.language === lang.code
@@ -343,20 +349,27 @@ export default function SettingsPage() {
                 <label className="block text-sm font-medium text-zinc-300 mb-3">
                   Theme
                 </label>
-                <div className="grid grid-cols-3 gap-3">
-                  {themes.map((theme) => (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {availableThemes.map((theme) => (
                     <button
                       key={theme.code}
-                      onClick={() => savePreferences({ theme: theme.code })}
+                      onClick={() => {
+                        console.log('Theme button clicked:', theme.code);
+                        // Apply theme immediately for instant feedback
+                        setTheme(theme.code);
+                        // Then save preferences
+                        savePreferences({ theme: theme.code });
+                      }}
                       disabled={saving}
-                      className={`p-4 rounded-lg border transition-all duration-200 ${
+                      className={`p-4 rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer ${
                         preferences.theme === theme.code
-                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400'
-                          : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                          ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400 shadow-lg shadow-cyan-500/20'
+                          : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300 hover:bg-zinc-800/50'
                       }`}
                     >
                       <div className="text-3xl mb-2">{theme.icon}</div>
-                      <div className="text-sm">{theme.name}</div>
+                      <div className="text-sm font-medium">{theme.name}</div>
+                      <div className="text-xs text-zinc-500 mt-1">{theme.description}</div>
                     </button>
                   ))}
                 </div>

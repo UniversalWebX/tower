@@ -181,16 +181,6 @@
       "swcTraceProfiling": false,
       "forceSwcTransforms": false,
       "largePageDataBytes": 128000,
-      "turbo": {
-        "rules": {
-          "*.svg": {
-            "loaders": [
-              "@svgr/webpack"
-            ],
-            "as": "*.js"
-          }
-        }
-      },
       "typedEnv": false,
       "parallelServerCompiles": false,
       "parallelServerBuildTraces": false,
@@ -301,14 +291,6 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.js",
     "turbopack": {
-      "rules": {
-        "*.svg": {
-          "loaders": [
-            "@svgr/webpack"
-          ],
-          "as": "*.js"
-        }
-      },
       "root": "C:\\Users\\ponguin\\OneDrive\\Pictures\\Documents\\Cursor Projects\\tower"
     }
   },
